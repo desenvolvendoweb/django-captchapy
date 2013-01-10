@@ -1,0 +1,6 @@
+include MANIFEST.in
+include README.rst
+recursive-include captchapy/media/fonts *
+recursive-include captchapy/media/images *
+recursive-include captchapy/media/tmp *
+prune testproject

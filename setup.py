@@ -7,7 +7,7 @@ setup(
     author='Rafael Feijo da Rosa',
     author_email='rafael@desenvolvendoweb.com.br',
     url='http://www.desenvolvendoweb.com.br/',
-    packages=['captchapy'],
+    packages=find_packages(),
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Framework :: Django',
@@ -26,4 +26,6 @@ setup(
     # Tells setuptools to download setuptools_git before running setup.py so
     # it can find the data files under Git version control.
     zip_safe=False,
+    install_requires=['setuptools'],
+    requires=['PIL (>=1.1.6)']
 )

@@ -1,6 +1,6 @@
 include MANIFEST.in
 include README.rst
-include daemon.sh
+include captchapy/daemon.sh
 recursive-include captchapy/media/fonts *
 recursive-include captchapy/media/images *
 recursive-include captchapy/media/tmp *

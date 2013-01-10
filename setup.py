@@ -2,7 +2,7 @@ from setuptools import setup, find_packages
 
 setup(
     name='django-captchapy',
-    version=find_version("captchapy", "__init__.py"),
+    version='1.0',
     description='Captcha para django simples.',
     author='Rafael Feijo da Rosa',
     author_email='rafael@desenvolvendoweb.com.br',

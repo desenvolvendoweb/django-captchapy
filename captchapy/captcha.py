@@ -1,28 +1,10 @@
-"""Captcha image generator.
-
-Draws images of random words in such a way that efficient computer based
-recognition is highly difficult. These images can be used for example to validate
-if form-posts are done by a honest human being, or by a computerized spambot.
-
-This generator can use a background picture or generate its own background.
-The output is a JPG image. The dimensions vary a bit depending on what size is
-needed to draw all the letters in the specified word.
-You have to supply a Truetype font (.ttf) that it will use to draw the letters.
-Don't use a regular font such as Courier. Use handwriting-style fonts or similar,
-for example (freely available at http://www.fontgirl.com):
-  FGJaynePrint, AnkeCalligraph, ChildsPlay, FontOnAStick.
-Adding a squiggly is recommended as it makes segmentation much harder.
-Adding noiselines may make automatic recognition harder too, but sometimes it
-renders the image unreadable for humans as well (which is not really nice).
-Requires PIL for image manipulations (http://www.pythonware.com/products/pil/)
-
-(c) Irmen de Jong - irmen@razorvine.net
-Software License: MIT (http://www.opensource.org/licenses/mit-license.php)
-I.e. use it freely, but include the above copyright notice and this license text.
-Supplied as-is. No warranties.
-"""
+# -*- coding: utf-8 -*-
+#!/usr/bin/env python
 
 __version__="1.2"
+
+from subprocess import Popen
+from django.conf import settings
 
 import Image
 import ImageDraw
@@ -32,49 +14,55 @@ import ImageColor
 import random
 import time
 import hashlib
+import os
 
-def createWord(length=6, allowed="cfkmpqrstvwxyzABCDEFGHJKLMNPQRSTUVWXYZ"):
-    """create a random 'word' from a set of letters with high visual distinction, or any given set""" 
-    return "".join( [random.choice(allowed) for i in xrange(length)] )
+MODPATH = os.path.abspath(os.path.dirname(__file__))
+
+if not getattr(settings, 'CAPTCHA_CONF', False):
+    settings.CAPTCHA_CONF = {}
+
+CAPTCHA_CONF = {
+                    'time_cache'   : settings.CAPTCHA_CONF.get('time_cache'    , 60),
+                    'format_image' : settings.CAPTCHA_CONF.get('format_image'  , 'gif'),
+                    'font'         : settings.CAPTCHA_CONF.get('font'          , 'ChildsPlay.ttf'),
+                    'dir_font'     : settings.CAPTCHA_CONF.get('dir_font'      , MODPATH + "/media/fonts/"),
+                    'text_size'    : settings.CAPTCHA_CONF.get('text_size'     , 45),
+                    'dir_image_bg' : settings.CAPTCHA_CONF.get('dir_image_bg'  , MODPATH + "/media/images/"),
+                    'image_bg'     : settings.CAPTCHA_CONF.get('image_bg'      , "bg.png"),
+                    'noiselines'   : settings.CAPTCHA_CONF.get('noiselines'    , False),
+                    'squiggly'     : settings.CAPTCHA_CONF.get('squiggly'      , False),
+                    'btn_ok'       : settings.CAPTCHA_CONF.get('btn_ok'        , False),
+                    'allowed'      : settings.CAPTCHA_CONF.get('allowed'       , "ABCDEFGHIJKLMNOPQRSTUVWXYZ"),
+                    'text_length'  : settings.CAPTCHA_CONF.get('text_length'   , 4),
+                    'message_dig'  : settings.CAPTCHA_CONF.get('message_dig'   , u'Digite a palavra'),
+                    'message_erro' : settings.CAPTCHA_CONF.get('message_erro'  , u'Palavra íncorreta'),
+                }
 
 class Captcha(object):
-    """A generated captcha image and some extra properties."""
     def __init__(self, word, image):
         self.timestamp=time.time()
         self.word=word
         self.image=image
-    def writeImage(self, outputstream, word):
-	key = hashlib.sha224(word.lower()).hexdigest()
-        self.image.save(outputstream + key + '.jpg', format="jpeg")
-	return key
+    def writeImage(self, local, outputstream, word):
+        key   = hashlib.sha224(word.lower()).hexdigest()
+        image = outputstream + key + '.' + CAPTCHA_CONF['format_image']
+        self.urlimage = image
+        self.image.save(local + image, format=CAPTCHA_CONF['format_image'])
+        p = Popen( ('%s/daemon.sh' % MODPATH, '%s' % (local + image), '%s' % CAPTCHA_CONF['time_cache']) )
+        return key
     def show(self):
         self.image.show()
     def age(self):
-        """returns the 'age' of the generated captcha image in seconds"""
         return time.time()-self.timestamp
     def is_captcha(self, word, key):
-	key2 = hashlib.sha224(word.lower()).hexdigest()
-	if key == key2:
-	    return True
-	return False
+        key2 = hashlib.sha224(word.lower()).hexdigest()
+        if key == key2:
+            return True
+        return False
 
 class CaptchaGen(object):
-    """Generator of Captcha Images in JPG format.
-    
-    Can use any truetype font for the text, and can use a background picture or a self-generated background.
-    This class is thread-safe."""
     
     def __init__(self, fontname, textcol_bright, textcol_dark, textsize=40, noiselines=False, bgpicture=None, squiggly=False):
-        """create a captcha generator object.
-        
-        fontname - path to a .ttf font file
-        textcol_bright - bright text color; (r,g,b) tuple or a PIL-compatible color string
-        textcol_dark - dark text color; (r,g,b) tuple or a PIL-compatible color string
-        textsize - font size 
-        noiselines - wether to draw noise lines all over the image
-        bgpicture - background picture to load. If not specified, a background is generated.
-        squiggly - wether to draw a squiggly line through the text
-        """
         self.font=ImageFont.truetype(fontname, textsize)
         self.lettersize=self.font.getsize('x')
         if type(textcol_bright)!=tuple:
@@ -93,21 +81,17 @@ class CaptchaGen(object):
             self.bgpicture=None
             
     def generateCaptcha(self, text):
-        """Generate a Captcha image with the given text drawn in it, in JPG format.
-        Note that the text must be between 5 and 8 characters."""
         assert 4<=len(text)<=8
         letters=self.makeTextImage(text, self.squiggly)
         w,h=letters.size
         captchaw=w+self.lettersize[0]
         captchah=h+self.lettersize[1]/2
         if self.bgpicture:
-            # crop a random area from the configured background picture
             bg=self.bgpicture.copy()
             cx=random.randint(0,bg.size[0]-captchaw)
             cy=random.randint(0,bg.size[1]-captchah)
             bg=bg.crop((cx,cy,cx+captchaw,cy+captchah))
         else:
-            # generate a random background ourselves
             bg=self.createBackground((captchaw, captchah))
         if self.noiselines:
             self.drawNoiseLines(bg)
@@ -116,7 +100,6 @@ class CaptchaGen(object):
         return Captcha(text, bg)
 
     def _makeTextImage(self, text, angle):
-        """create an image containing the given text tilted at the given angle"""
         (width,height)=self.font.getsize(text)
         width+=10
         height+=10
@@ -130,7 +113,6 @@ class CaptchaGen(object):
         return letters
 
     def makeTextImage(self, text, squiggly=False):
-        """create an image containing the given text, slightly warped, with optional squiggly line"""
         text1, text2 = self.splitText(text)
         letters1=self._makeTextImage(text1, 20)
         letters2=self._makeTextImage(text2, -20)
@@ -157,7 +139,6 @@ class CaptchaGen(object):
         return target
 
     def drawNoiseLines(self, image, count=10):
-        """add random noise lines to the image"""
         draw=ImageDraw.Draw(image)
         iw,ih=image.size
         for i in xrange(count):
@@ -170,8 +151,6 @@ class CaptchaGen(object):
                 draw.line( (x,y,x+w,y+h), fill=(255-r,255-g,255-b), width=2)
 
     def createBackground(self, size):
-        """if no background picture is used, a random background is created.
-        The colors used are based on the negatives of the text colors."""
         lr,lg,lb=self.textcol_bright
         lr,lg,lb=255-lr,255-lg,255-lb
         dr,dg,db=self.textcol_dark
@@ -200,15 +179,53 @@ class CaptchaGen(object):
         return bg
         
     def splitText(self, text):
-        """split the text in two pieces that will be drawn separately"""
         splitpos=random.randint(2, len(text)-2)
         return text[0:splitpos], text[splitpos:]
-
-
-if __name__=="__main__":
-    cg = CaptchaGen("media/fonts/ChildsPlay.ttf", (100,80,60), (60,40,30), textsize=45, bgpicture="media/images/bg.png", noiselines=False, squiggly=False)
-    word=createWord(length=4, allowed="ABCDEFGHIJKLMNOPQRSTUVWXYZ")
-    print word
-    c=cg.generateCaptcha(word)
-    print c.writeImage('media/tmp/', word)
-    print c.is_captcha('ZHjm', '57d43494472b403520e62893dff463f517c18a1b3cf20b293f42e7f1')
+    
+    def createWord(self, length=6, allowed="cfkmpqrstvwxyzABCDEFGHJKLMNPQRSTUVWXYZ"): 
+        return "".join( [random.choice(allowed) for i in xrange(length)] )
+    
+    
+class CaptchaForm(object):
+    
+    def __init__(self, p=None):
+        cg   = CaptchaGen(CAPTCHA_CONF['dir_font'] + CAPTCHA_CONF['font'], (100,80,60), (60,40,30), textsize=CAPTCHA_CONF['text_size'], bgpicture=CAPTCHA_CONF['dir_image_bg'] + CAPTCHA_CONF['image_bg'], noiselines=CAPTCHA_CONF['noiselines'], squiggly=CAPTCHA_CONF['squiggly'])
+        word = cg.createWord(length=CAPTCHA_CONF['text_length'], allowed=CAPTCHA_CONF['allowed'])
+        c    = cg.generateCaptcha(word)
+        
+        self.c      = c
+        self.key    = c.writeImage(MODPATH, '/media/tmp/', word)
+        self.image  = c.urlimage
+        self.hidden = '1'
+        self.field  = '2'
+        
+        if p and p.get('hidden_captcha_1', False):
+            self.hidden = p.get('hidden_captcha_1' , '')
+            self.field  = p.get('field_captcha_1'  , '')
+    
+    def is_valid(self, verific=False):
+        r = self.c.is_captcha(self.field, self.hidden)
+        if not verific:
+            try:
+                os.remove(MODPATH + '/media/tmp/' + self.hidden + '.gif')
+            except:
+                return False
+        return r
+    
+    def message(self):
+        if self.field == '2':
+            return u''
+        elif not len(self.field) > 0:
+            return CAPTCHA_CONF['message_dig']
+        elif not self.is_valid(True):
+            return CAPTCHA_CONF['message_erro']
+        return u''
+    
+    def get_field(self):
+        str      = u'<img class="image_captcha" src="/captcha%s" border="0" />' % (self.image,)
+        str     += u'<input type="hidden" name="%s" value="%s" />' % ('hidden_captcha_1', self.key,)
+        str     += u'<input class="field_captcha" type="text" name="%s" value="" size="10" />' % ('field_captcha_1',)
+        if CAPTCHA_CONF['btn_ok']:
+            str += u'<input class="btn_captcha" type="submit" name="OK" value="OK" />'
+        
+        return str

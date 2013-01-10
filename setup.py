@@ -7,7 +7,7 @@ setup(
     author='Rafael Feijo da Rosa',
     author_email='rafael@desenvolvendoweb.com.br',
     url='http://www.desenvolvendoweb.com.br/',
-    packages=packages = ['captchapy'],,
+    packages=['captchapy'],
     classifiers=[
         'Development Status :: 5 - Production/Stable',
         'Framework :: Django',

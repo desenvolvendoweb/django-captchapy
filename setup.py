@@ -106,8 +106,6 @@ def find_package_data(where='.', package='',
                 out.setdefault(package, []).append(prefix + name)
     return out
 
-os.mkdir(os.path.join(os.path.dirname(__file__), 'captchapy/media/tmp'))
-
 setup(
     name="django-captchapy",
     version=find_version("captchapy", "__init__.py"),

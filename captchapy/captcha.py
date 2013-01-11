@@ -3,7 +3,8 @@
 
 __version__="1.2"
 
-from subprocess import Popen, PIPE
+from command import Sh
+
 from django.conf import settings
 
 import Image
@@ -48,8 +49,10 @@ class Captcha(object):
         image = outputstream + key + '.' + CAPTCHA_CONF['format_image']
         self.urlimage = image
         self.image.save(local + image, format=CAPTCHA_CONF['format_image'])
-        p = Popen( ('%s/daemon.sh' % MODPATH, '%s' % (local + image), '%s' % CAPTCHA_CONF['time_cache']), shell=True, stdout=PIPE, stderr=PIPE )
-        p.communicate()
+        
+        sh = Sh()
+        sh.python('%s/daemon.py' % MODPATH, '%s' % (local + image), '%s' % CAPTCHA_CONF['time_cache'])
+
         return key
     def show(self):
         self.image.show()

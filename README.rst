@@ -9,10 +9,12 @@ Uso extremamente simples:
     pip install git+https://github.com/desenvolvendoweb/django-captchapy.git
 
 2º settings.py:
-    $ INSTALLED_APPS = (
-    $ ...
-    $ 'captchapy',
-    $ )
+<pre> 
+	INSTALLED_APPS = (
+		...
+		'captchapy',
+	) 
+</pre>
 
 3º views.py:
     from captchapy.captcha import CaptchaForm

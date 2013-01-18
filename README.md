@@ -47,7 +47,7 @@ Modo avançado
 
 6º settings.py:
     CAPTCHA_CONF = {
-	    ('time_cache'   : 60), # Tempo para limpar o cache
+    	('time_cache'   : 60), # Tempo para limpar o cache
         ('format_image' : 'gif'), # Tipo de imagem gerada, gif, jpeg, png
         ('font'         : 'ChildsPlay.ttf'), # Tipo de fonte, se precisar de outras fontes é só mudar o dir_font e adicionar a fonte desejada
         ('dir_font'     : "/media/fonts/"), # Diretorio das fontes

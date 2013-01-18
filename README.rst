@@ -47,7 +47,8 @@ Modo avançado
 
 6º settings.py:
     CAPTCHA_CONF = {
-        ## tempo para limpar o cache.
+        Tempo para limpar o cache
+
 	'time_cache'   : 60),
         ## tipo de imagem gerada, gif, jpeg, png
         'format_image' : 'gif'),

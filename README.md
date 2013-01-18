@@ -6,15 +6,18 @@ Aplicação captcha para django python
 Uso extremamente simples:
 
 1º comandos no console:
+
     pip install git+https://github.com/desenvolvendoweb/django-captchapy.git
 
 2º settings.py:
+
     INSTALLED_APPS = (
-		...
-		'captchapy',
-	)
+    	...
+    	'captchapy',
+    )
 
 3º views.py:
+
     from captchapy.captcha import CaptchaForm
 
     human = False
@@ -30,22 +33,26 @@ Uso extremamente simples:
     p['human']   = human
 
 4º template.html:
-    {% if captcha.message %}
-  	    <div class="captcha_message">{{ captcha.message }}</div>
-	{% endif %}
-		    
-	<div class="captcha">{{ captcha.get_field|safe }}</div>
 
-5º urlpatterns = patterns('',
-    url(r'^captcha/'  , include('captchapy.urls')),
-    ...
-)
+    {% if captcha.message %}
+    	<div class="captcha_message">{{ captcha.message }}</div>
+    {% endif %}
+    
+    <div class="captcha">{{ captcha.get_field|safe }}</div>
+
+5º urls.py:
+
+	urlpatterns = patterns('',
+		url(r'^captcha/'  , include('captchapy.urls')),
+		...
+	)
 
 Fim. Fácil né?
 
 Modo avançado
 
 6º settings.py:
+
     CAPTCHA_CONF = {
     	('time_cache'   : 60), # Tempo para limpar o cache
         ('format_image' : 'gif'), # Tipo de imagem gerada, gif, jpeg, png

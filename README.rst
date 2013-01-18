@@ -47,56 +47,34 @@ Modo avançado
 
 6º settings.py:
     CAPTCHA_CONF = {
-        Tempo para limpar o cache
 
-	'time_cache'   : 60),
-        Tipo de imagem gerada, gif, jpeg, png
-
-        'format_image' : 'gif'),
+	'time_cache'   : 60), # Tempo para limpar o cache
+        
+        'format_image' : 'gif'), # Tipo de imagem gerada, gif, jpeg, png
 
         'font'         : 'ChildsPlay.ttf'), # Tipo de fonte, se precisar de outras fontes é só mudar o dir_font e adicionar a fonte desejada
 
         'dir_font'     : "/media/fonts/"), # Diretorio das fontes
 
-        Tamanho da fonte
+        'text_size'    : 45), # Tamanho da fonte
 
-        'text_size'    : 45),
+        'dir_image_bg' : "/media/images/"), # Diretorio onde se encontra as images de fundo
 
-        Diretorio onde se encontra as images de fundo
+        'image_bg'     : "bg.png"), # Nome da imagem de fundo em seu diretorio personalizado
 
-        'dir_image_bg' : "/media/images/"),
+        'noiselines'   : False), # Linhas que desfocam o texto sobre o imagem de fundo
 
-        Nome da imagem de fundo em seu diretorio personalizado
+        'squiggly'     : False), # Linhas que desfocam a imagem de fundo
 
-        'image_bg'     : "bg.png"),
+        'btn_ok'       : False), # Botão de ok ao lado o campo input de texto
 
-        Linhas que desfocam o texto sobre o imagem de fundo
+        'allowed'      : "ABCDEFGHIJKLMNOPQRSTUVWXYZ"), # Caracteres disponiveis para sorteio
 
-        'noiselines'   : False),
+        'text_length'  : 4), # Numero de letras dentro da imagem
 
-        Linhas que desfocam a imagem de fundo
+        'message_dig'  : u'Digite a palavra'), # Mensagem amigavel para digitar a palavra
 
-        'squiggly'     : False),
-
-        Botão de ok ao lado o campo input de texto
-
-        'btn_ok'       : False),
-
-        Caracteres disponiveis para sorteio
-
-        'allowed'      : "ABCDEFGHIJKLMNOPQRSTUVWXYZ"),
-
-        Numero de letras dentro da imagem
-
-        'text_length'  : 4),
-
-        Mensagem amigavel para digitar a palavra
-
-        'message_dig'  : u'Digite a palavra'),
-
-        Mensagem amigavel para informar que a palavra está incorreta
-
-        'message_erro' : u'Palavra íncorreta'),
+        'message_erro' : u'Palavra íncorreta'), # Mensagem amigavel para informar que a palavra está incorreta
     }
 
 Bom pessoal, é isso.

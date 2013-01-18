@@ -48,33 +48,33 @@ Modo avançado
 6º settings.py:
     CAPTCHA_CONF = {
 
-	'time_cache'   : 60), # Tempo para limpar o cache
+	('time_cache'   : 60), # Tempo para limpar o cache
         
-        'format_image' : 'gif'), # Tipo de imagem gerada, gif, jpeg, png
+        ('format_image' : 'gif'), # Tipo de imagem gerada, gif, jpeg, png
 
-        'font'         : 'ChildsPlay.ttf'), # Tipo de fonte, se precisar de outras fontes é só mudar o dir_font e adicionar a fonte desejada
+        ('font'         : 'ChildsPlay.ttf'), # Tipo de fonte, se precisar de outras fontes é só mudar o dir_font e adicionar a fonte desejada
 
-        'dir_font'     : "/media/fonts/"), # Diretorio das fontes
+        ('dir_font'     : "/media/fonts/"), # Diretorio das fontes
 
-        'text_size'    : 45), # Tamanho da fonte
+        ('text_size'    : 45), # Tamanho da fonte
 
-        'dir_image_bg' : "/media/images/"), # Diretorio onde se encontra as images de fundo
+        ('dir_image_bg' : "/media/images/"), # Diretorio onde se encontra as images de fundo
 
-        'image_bg'     : "bg.png"), # Nome da imagem de fundo em seu diretorio personalizado
+        ('image_bg'     : "bg.png"), # Nome da imagem de fundo em seu diretorio personalizado
 
-        'noiselines'   : False), # Linhas que desfocam o texto sobre o imagem de fundo
+        ('noiselines'   : False), # Linhas que desfocam o texto sobre o imagem de fundo
 
-        'squiggly'     : False), # Linhas que desfocam a imagem de fundo
+        ('squiggly'     : False), # Linhas que desfocam a imagem de fundo
 
-        'btn_ok'       : False), # Botão de ok ao lado o campo input de texto
+        ('btn_ok'       : False), # Botão de ok ao lado o campo input de texto
 
-        'allowed'      : "ABCDEFGHIJKLMNOPQRSTUVWXYZ"), # Caracteres disponiveis para sorteio
+        ('allowed'      : "ABCDEFGHIJKLMNOPQRSTUVWXYZ"), # Caracteres disponiveis para sorteio
 
-        'text_length'  : 4), # Numero de letras dentro da imagem
+        ('text_length'  : 4), # Numero de letras dentro da imagem
 
-        'message_dig'  : u'Digite a palavra'), # Mensagem amigavel para digitar a palavra
+        ('message_dig'  : u'Digite a palavra'), # Mensagem amigavel para digitar a palavra
 
-        'message_erro' : u'Palavra íncorreta'), # Mensagem amigavel para informar que a palavra está incorreta
+        ('message_erro' : u'Palavra íncorreta'), # Mensagem amigavel para informar que a palavra está incorreta
     }
 
 Bom pessoal, é isso.

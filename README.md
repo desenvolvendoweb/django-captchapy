@@ -19,16 +19,13 @@ Uso extremamente simples:
 3º views.py:
 
     from captchapy.captcha import CaptchaForm
-
     human = False
-
     if request.POST:
         form = CaptchaForm(request.POST)
         if form.is_valid():
             human = True
     else:
         form = CaptchaForm()
-
     p['captcha'] = form
     p['human']   = human
 
@@ -37,33 +34,32 @@ Uso extremamente simples:
     {% if captcha.message %}
     	<div class="captcha_message">{{ captcha.message }}</div>
     {% endif %}
-    
     <div class="captcha">{{ captcha.get_field|safe }}</div>
 
 5º urls.py:
 
-	urlpatterns = patterns('',
-		url(r'^captcha/'  , include('captchapy.urls')),
-		...
-	)
+    urlpatterns = patterns('',
+        url(r'^captcha/'  , include('captchapy.urls')),
+        ...
+    )
 
 Fim. Fácil né?
 
 Caso estiver usando sistema operacional Ubuntu 32 bits, instalar os motores de requisitos minimos:
 
-sudo apt-get install libjpeg-dev libfreetype6 libfreetype6-dev zlib1g-dev
-sudo ln -s /usr/lib/i386-linux-gnu/libjpeg.so /usr/lib
-sudo ln -s /usr/lib/i386-linux-gnu/libfreetype.so /usr/lib
-sudo ln -s /usr/lib/i386-linux-gnu/libz.so /usr/lib
-pip install Pillow
+    sudo apt-get install libjpeg-dev libfreetype6 libfreetype6-dev zlib1g-dev
+    sudo ln -s /usr/lib/i386-linux-gnu/libjpeg.so /usr/lib
+    sudo ln -s /usr/lib/i386-linux-gnu/libfreetype.so /usr/lib
+    sudo ln -s /usr/lib/i386-linux-gnu/libz.so /usr/lib
+    pip install Pillow
 
 Caso estiver usando sistema operacional Ubuntu 64 bits, instalar os motores de requisitos minimos:
 
-sudo apt-get install libjpeg-dev libfreetype6 libfreetype6-dev zlib1g-dev
-sudo ln -s /usr/lib/x86_64-linux-gnu/libjpeg.so /usr/lib
-sudo ln -s /usr/lib/x86_64-linux-gnu/libfreetype.so /usr/lib
-sudo ln -s /usr/lib/x86_64-linux-gnu/libz.so /usr/lib
-pip install Pillow
+    sudo apt-get install libjpeg-dev libfreetype6 libfreetype6-dev zlib1g-dev
+    sudo ln -s /usr/lib/x86_64-linux-gnu/libjpeg.so /usr/lib
+    sudo ln -s /usr/lib/x86_64-linux-gnu/libfreetype.so /usr/lib
+    sudo ln -s /usr/lib/x86_64-linux-gnu/libz.so /usr/lib
+    pip install Pillow
 
 Modo avançado
 

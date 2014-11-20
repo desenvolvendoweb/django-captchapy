@@ -7,11 +7,16 @@ from command import Sh
 
 from django.conf import settings
 
-import Image
-import ImageDraw
-import ImageFont
-import ImageFilter
-import ImageColor
+try:
+    import Image
+    import ImageDraw
+    import ImageFont
+    import ImageFilter
+    import ImageColor
+except:
+    # Django 1.6.2
+    from PIL import Image, ImageDraw, ImageFont, ImageFilter, ImageColor
+
 import random
 import time
 import hashlib

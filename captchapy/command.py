@@ -5,7 +5,7 @@ class Cmd(object):
         self.cmd = cmd
     def __call__(self, *args):
         command = '%s %s' % (self.cmd, ' '.join(args))
-        result = Popen(command, stdout=PIPE, stderr=PIPE, shell=True)
+        result = Popen(command, stdout=PIPE, stderr=PIPE, shell=True, close_fds=True)
 
 class Sh(object):
     def __getattr__(self, attribute):
